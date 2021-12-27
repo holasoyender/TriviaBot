@@ -1,0 +1,12 @@
+Que todos los usuarios puedan agregar preguntas, pero que si tienen X rol se acepten automáticamente y si no lo tienen que pasen por revisión
+    - Canal en donde enviar los embeds con un botón de si/no para aprobar o rechazar la pregunta
+    - Comando de bloquear y desbloquear usuarios (para que no puedan agregar preguntas)
+    - Comando de eliminar preguntas (solo con el rol de admin)
+
+Comando de Leaderboard (Lista de los usuarios con más puntos)
+Comando de Stats (Estadísticas por usuario)
+Comando de Jugar
+
+-???? (Cosas que no estoy seguro si hacer o no)
+Puntos por nivel de dificultad, Difícil: 3 puntos, Medio: 2 puntos, Fácil: 1 punto
+-????
