@@ -101,4 +101,25 @@ public class Database {
         Usuarios.updateOne(new Document("ID", user.getId()), new Document("$addToSet", new Document("Completadas", ID+" ".trim())));
     }
 
+    public static void addIncorrectTrivia(User user) {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
+        Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
+        if (Usuario == null) {
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 1));
+        } else {
+            Usuarios.updateOne(new Document("ID", user.getId()), new Document("$inc", new Document("Incorrectas", 1)));
+        }
+    }
+
+    public static void addCorrectTrivia(User user) {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
+        Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
+        if (Usuario == null) {
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 1).append("Incorrectas", 0));
+        } else {
+            Usuarios.updateOne(new Document("ID", user.getId()), new Document("$inc", new Document("Correctas", 1)));
+        }
+    }
 }

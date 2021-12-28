@@ -138,6 +138,7 @@ public class Interactions extends ListenerAdapter {
                     }
                     Database.addUserPoints(event.getUser(), Puntos);
                     Database.addCompletedTrivia(event.getUser(), QuestionID);
+                    Database.addCorrectTrivia(event.getUser());
 
                     EmbedBuilder Embed = new EmbedBuilder()
                             .setColor(0x6BF47E)
@@ -169,6 +170,7 @@ public class Interactions extends ListenerAdapter {
                     }
                     Database.addUserPoints(event.getUser(), -1);
                     Database.addCompletedTrivia(event.getUser(), QuestionID);
+                    Database.addIncorrectTrivia(event.getUser());
 
                     EmbedBuilder Embed = new EmbedBuilder()
                             .setColor(0xFF4334)
