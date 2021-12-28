@@ -4,7 +4,7 @@ Que todos los usuarios puedan agregar preguntas, pero que si tienen X rol se ace
     - Comando de eliminar preguntas (solo con el rol de admin)
 
 Comando de Leaderboard (Lista de los usuarios con más puntos)
-Comando de Stats (Estadísticas por usuario)
+ HECHO ----- Comando de Stats (Estadísticas por usuario)
  HECHO ----- Comando de Jugar
 
  HECHO ----- Puntos por nivel de dificultad, Difícil: 3 puntos, Medio: 2 puntos, Fácil: 1 punto
