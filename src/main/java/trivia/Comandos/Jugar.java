@@ -3,10 +3,13 @@ package trivia.Comandos;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.bson.Document;
 import trivia.Config;
 import trivia.Database.Database;
 import trivia.Utils.Command;
+
+import java.util.*;
 
 public class Jugar implements Command {
     @Override
@@ -29,14 +32,17 @@ public class Jugar implements Command {
         String Dificultad = Trivia.getString("Dificultad");
         String footerImg = "https://i.imgur.com/XlARsD6.png";
 
-        if(Dificultad.equals("Fácil"))
+        if(Dificultad.equals("Fácil")) {
             footerImg = "https://i.imgur.com/XlARsD6.png";
+        }
 
-        if(Dificultad.equals("Media"))
+        if(Dificultad.equals("Media")) {
             footerImg = "https://i.imgur.com/521SKXF.png";
+        }
 
-        if(Dificultad.equals("Difícil"))
+        if(Dificultad.equals("Difícil")) {
             footerImg = "https://i.imgur.com/JD0MDyW.png";
+        }
 
 
         EmbedBuilder Embed = new EmbedBuilder()
@@ -46,8 +52,15 @@ public class Jugar implements Command {
                 .setDescription("```CSS\n" + Trivia.getString("Pregunta") + "```")
                 .setFooter("Dificultad: " + Dificultad+"  |  ID: "+Trivia.getInteger("ID"), footerImg);
 
-        context.replyEmbeds(Embed.build()).queue();
+        List<String> respuestas = Trivia.getList("Respuestas-incorrectas", String.class);
 
+        List<Button> buttons = new ArrayList<>();
+        for (String respuesta : respuestas) {
+            buttons.add(Button.primary("cmd:play:"+context.getUser().getId()+":"+Trivia.getInteger("ID")+":bad:"+respuesta.toLowerCase().replaceAll(" ",""), respuesta));
+        }
+        buttons.add(Button.primary("cmd:play:"+context.getUser().getId()+":"+Trivia.getInteger("ID")+":good", Trivia.getString("Respuesta-correcta")));
+        Collections.shuffle(buttons);
+        context.replyEmbeds(Embed.build()).addActionRow(buttons).queue();
     }
 
     @Override

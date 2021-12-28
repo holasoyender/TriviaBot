@@ -96,6 +96,93 @@ public class Interactions extends ListenerAdapter {
                         Button.primary("cmd:list:"+Page+":next:"+event.getUser().getId(), "▶")
                 ).queue();
             }
+            if(args[1].equals("play")) {
+                String ModID = args[2];
+                long QuestionID = Long.parseLong(args[3]);
+                String type = args[4];
+
+                if (!event.getUser().getId().equals(ModID)) {
+                    EmbedBuilder embed = new EmbedBuilder()
+                            .setColor(0xFF4334)
+                            .setDescription("**:no_entry_sign:  No puedes usar este botón!**");
+                    event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+                    return;
+                }
+                Document Question = Database.getTriviaByID(QuestionID);
+                if (Question == null) {
+                    EmbedBuilder embed = new EmbedBuilder()
+                            .setColor(0xFF4334)
+                            .setDescription("**:no_entry_sign:  Parece que no puedo encontrar ese trivia!**");
+                    event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+                    return;
+                }
+
+                if(type.equals("good")) {
+                    String Dificultad = Question.getString("Dificultad");
+                    String footerImg = "https://i.imgur.com/XlARsD6.png";
+                    int Puntos = 0;
+
+                    if(Dificultad.equals("Fácil")) {
+                        footerImg = "https://i.imgur.com/XlARsD6.png";
+                        Puntos = 1;
+                    }
+
+                    if(Dificultad.equals("Media")) {
+                        footerImg = "https://i.imgur.com/521SKXF.png";
+                        Puntos = 2;
+                    }
+
+                    if(Dificultad.equals("Difícil")) {
+                        footerImg = "https://i.imgur.com/JD0MDyW.png";
+                        Puntos = 3;
+                    }
+                    Database.addUserPoints(event.getUser(), Puntos);
+                    Database.addCompletedTrivia(event.getUser(), QuestionID);
+
+                    EmbedBuilder Embed = new EmbedBuilder()
+                            .setColor(0x6BF47E)
+                            .setAuthor("¡ Respuesta correcta de "+event.getUser().getName()+" !", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925517686497247293/emoji..png")
+                            .setDescription("```CSS\n" + Question.getString("Pregunta") + "```")
+                            .addField("Puntos recibidos", "**"+Puntos+"** puntos", true)
+                            .addField("Puntos totales", "**"+Database.getUserPoints(event.getUser())+"** puntos", true)
+                            .setFooter("Dificultad: " + Dificultad+"  |  ID: "+Question.getInteger("ID"), footerImg);
+
+                    event.editComponents().setEmbeds(Embed.build()).queue();
+
+                    return;
+                }
+                if(type.equals("bad")) {
+                    String Dificultad = Question.getString("Dificultad");
+                    String footerImg = "https://i.imgur.com/XlARsD6.png";
+
+                    if(Dificultad.equals("Fácil")) {
+                        footerImg = "https://i.imgur.com/XlARsD6.png";
+                    }
+
+                    if(Dificultad.equals("Media")) {
+                        footerImg = "https://i.imgur.com/521SKXF.png";
+                    }
+
+                    if(Dificultad.equals("Difícil")) {
+                        footerImg = "https://i.imgur.com/JD0MDyW.png";
+                    }
+                    Database.addUserPoints(event.getUser(), -1);
+                    Database.addCompletedTrivia(event.getUser(), QuestionID);
+
+                    EmbedBuilder Embed = new EmbedBuilder()
+                            .setColor(0xFF4334)
+                            .setAuthor("¡ Respuesta incorrecta de "+event.getUser().getName()+" !", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setThumbnail("https://cdn.discordapp.com/attachments/726429501827055636/925494387457265744/emoji..png")
+                            .setDescription("```CSS\n" + Question.getString("Pregunta") + "```")
+                            .addField("Puntos recibidos", "**-1** puntos", true)
+                            .addField("Puntos totales", "**"+Database.getUserPoints(event.getUser())+"** puntos", true)
+                            .setFooter("Dificultad: " + Dificultad+"  |  ID: "+Question.getInteger("ID"), footerImg);
+
+                    event.editComponents().setEmbeds(Embed.build()).queue();
+                }
+
+            }
         }
 
         MongoDatabase db = Database.getDatabase();

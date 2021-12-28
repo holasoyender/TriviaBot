@@ -5,8 +5,8 @@ Que todos los usuarios puedan agregar preguntas, pero que si tienen X rol se ace
 
 Comando de Leaderboard (Lista de los usuarios con más puntos)
 Comando de Stats (Estadísticas por usuario)
-Comando de Jugar
+ HECHO ----- Comando de Jugar
 
--???? (Cosas que no estoy seguro si hacer o no)
-Puntos por nivel de dificultad, Difícil: 3 puntos, Medio: 2 puntos, Fácil: 1 punto
--????
+ HECHO ----- Puntos por nivel de dificultad, Difícil: 3 puntos, Medio: 2 puntos, Fácil: 1 punto
+ HECHO ----- Bajar 1 punto por cada respuesta incorrecta
+

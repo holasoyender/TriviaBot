@@ -55,7 +55,7 @@ public class Preguntas implements Command {
             return;
         }
         long id = CommandOption.getAsLong();
-        Document doc = Database.getQuestion(id);
+        Document doc = Database.getTriviaByID(id);
         if (doc == null) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(0xFF4334)
