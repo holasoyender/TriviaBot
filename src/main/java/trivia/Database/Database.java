@@ -58,8 +58,7 @@ public class Database {
         } else {
             List<Document> preguntasSinCompletar = new ArrayList<>();
             for (Document pregunta : Preguntas.find()) {
-
-                if (!Usuario.getList("Completadas", int.class).contains(pregunta.getInteger("ID"))) {
+                if (!Usuario.getList("Completadas", String.class).contains(""+pregunta.getInteger("ID"))) {
                     preguntasSinCompletar.add(pregunta);
                 }
             }
@@ -69,5 +68,10 @@ public class Database {
             int ID = (int) (Math.random() * preguntasSinCompletar.size());
             return preguntasSinCompletar.get(ID).getInteger("ID");
         }
+    }
+    public static Document getTriviaByID(long ID) {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Preguntas = Database.getCollection("Preguntas");
+        return Preguntas.find(new Document("ID", ID)).first();
     }
 }
