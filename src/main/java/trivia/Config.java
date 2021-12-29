@@ -35,7 +35,6 @@ public class Config {
                 OwnerID: "396683727868264449"    # La ID de usuario del propietario del bot (Obligatorio)
                 ChannelIDs: ["759535966179426314"]     # La ID del canal donde se podrá jugar al Trivia (Obligatorio)
                 
-                DefaultPrefix: "-"    # El prefijo que usará el bot en los comandos de owner (Opcional)
                 EmbedColor: "#71FFB2"    # El color de los embeds enviados por el bot (Opcional)
                 """;
 

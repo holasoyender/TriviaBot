@@ -21,6 +21,7 @@ public class CommandManager {
     }
 
     public CommandManager() {
+        addCommand(new Leaderboard());
         addCommand(new Stats());
         addCommand(new Jugar());
         addCommand(new Preguntas());

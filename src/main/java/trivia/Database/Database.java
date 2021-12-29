@@ -46,7 +46,7 @@ public class Database {
         MongoCollection<Document> Preguntas = Database.getCollection("Preguntas");
         Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
         if (Usuario == null) {
-            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 0));
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 0));
             int ID = (int) (Math.random() *  Preguntas.find().into(new ArrayList<>()).size());
             List<Document> PreguntasList = Preguntas.find().into(new ArrayList<>());
             return PreguntasList.get(ID).getInteger("ID");
@@ -85,7 +85,7 @@ public class Database {
         Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
         if (Usuario == null) {
             if(points == -1) points = 0;
-            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>()).append("Puntos", points).append("Correctas", 0).append("Incorrectas", 0));
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()).append("Completadas", new ArrayList<String>()).append("Puntos", points).append("Correctas", 0).append("Incorrectas", 0));
         } else {
             if(Usuario.getInteger("Puntos") + points < 0) points = 0;
             Usuarios.updateOne(new Document("ID", user.getId()), new Document("$inc", new Document("Puntos", points)));
@@ -96,7 +96,7 @@ public class Database {
         MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
         Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
         if (Usuario == null) {
-            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>().add(ID+" ".trim())).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 0));
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()).append("Completadas", new ArrayList<String>().add(ID+" ".trim())).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 0));
         }
         Usuarios.updateOne(new Document("ID", user.getId()), new Document("$addToSet", new Document("Completadas", ID+" ".trim())));
     }
@@ -106,7 +106,7 @@ public class Database {
         MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
         Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
         if (Usuario == null) {
-            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 1));
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 1));
         } else {
             Usuarios.updateOne(new Document("ID", user.getId()), new Document("$inc", new Document("Incorrectas", 1)));
         }
@@ -117,9 +117,14 @@ public class Database {
         MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
         Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
         if (Usuario == null) {
-            Usuarios.insertOne(new Document("ID", user.getId()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 1).append("Incorrectas", 0));
+            Usuarios.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 1).append("Incorrectas", 0));
         } else {
             Usuarios.updateOne(new Document("ID", user.getId()), new Document("$inc", new Document("Correctas", 1)));
         }
+    }
+    public static FindIterable<Document> getAllUsers() {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
+        return Usuarios.find();
     }
 }
