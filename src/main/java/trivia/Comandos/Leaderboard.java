@@ -25,6 +25,14 @@ public class Leaderboard implements Command {
             }
 
         List<Document> Usuarios = Database.getAllUsers().into(new ArrayList<>());
+        if(Usuarios.isEmpty()) {
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setColor(0xFF4334)
+                    .setDescription("**:no_entry_sign: Parece que no hay nadie en la lista!**");
+            context.replyEmbeds(embed.build()).setEphemeral(true).queue();
+            return;
+        }
+
         StringBuilder sb = new StringBuilder();
 
         Usuarios.sort((u1, u2) -> {
@@ -35,6 +43,7 @@ public class Leaderboard implements Command {
 
         int i = 1;
         for (Document doc : Usuarios) {
+            if(i > 10) break;
             sb.append(i).append(") [ ").append(doc.getString("Username")).append(" ] - ").append(doc.getInteger("Puntos")).append(" puntos\n\n");
             i++;
         }
