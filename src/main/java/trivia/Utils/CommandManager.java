@@ -21,6 +21,8 @@ public class CommandManager {
     }
 
     public CommandManager() {
+        addCommand(new Desbloquear());
+        addCommand(new Bloquear());
         addCommand(new Borrar());
         addCommand(new Leaderboard());
         addCommand(new Stats());

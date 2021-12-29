@@ -127,4 +127,32 @@ public class Database {
         MongoCollection<Document> Usuarios = Database.getCollection("Usuarios");
         return Usuarios.find();
     }
+    public static boolean blockUser(User user) {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Bloqueados = Database.getCollection("Bloqueados");
+        Document Bloqueado = Bloqueados.find(new Document("ID", user.getId())).first();
+        if (Bloqueado == null) {
+            Bloqueados.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()));
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static boolean unblockUser(User user) {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Bloqueados = Database.getCollection("Bloqueados");
+        Document Bloqueado = Bloqueados.find(new Document("ID", user.getId())).first();
+        if (Bloqueado != null) {
+            Bloqueados.deleteOne(new Document("ID", user.getId()));
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static boolean isBlocked(User user) {
+        MongoDatabase Database = getDatabase();
+        MongoCollection<Document> Bloqueados = Database.getCollection("Bloqueados");
+        Document Bloqueado = Bloqueados.find(new Document("ID", user.getId())).first();
+        return Bloqueado != null;
+    }
 }

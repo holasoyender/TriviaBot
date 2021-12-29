@@ -45,6 +45,16 @@ public class Add implements Command {
             }
         final boolean isAdminFinal = isAdmin;
 
+        if(!isAdminFinal) {
+            if (Database.isBlocked(context.getUser())) {
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(0xFF4334)
+                        .setDescription("**:no_entry_sign:  Tienes bloqueado el uso de este comando!");
+                context.replyEmbeds(embed.build()).setEphemeral(true).queue();
+                return;
+            }
+        }
+
         int id = Database.generateID();
         context.getUser().openPrivateChannel().queue(channel -> {
             EmbedBuilder Embed = new EmbedBuilder()
