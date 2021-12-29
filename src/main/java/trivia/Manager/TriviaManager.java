@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class TriviaManager {
 
-    public static void createTriviaManager(SlashCommandEvent event, Message message, int id) {
+    public static void createTriviaManager(SlashCommandEvent event, Message message, int id, boolean isAdmin) {
 
         MongoDatabase db = Database.getDatabase();
         MongoCollection<Document> Preguntas = db.getCollection("Preguntas");
@@ -19,6 +19,7 @@ public class TriviaManager {
         Document doc = new Document("OwnerID", event.getUser().getId())
                 .append("ID", id)
                 .append("Paso", 0)
+                .append("Revisada", isAdmin)
                 .append("MessageID", message.getId())
                 .append("Pregunta", "")
                 .append("Respuesta-correcta", "")

@@ -59,6 +59,7 @@ public class Messages extends ListenerAdapter {
                     .setAuthor("Añadir una pregunta al trivia", null, event.getJDA().getSelfUser().getAvatarUrl())
                     .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925053012475543612/emoji.png")
                     .setDescription("Bienvenido al proceso para añadir una pregunta al trivia.\n" +
+                            "Escribe un mensaje en el chat para rellenar cada apartado\n" +
                             "Si tienes alguna duda sobre este proceso, puedes mandarle un MD a <@!"+config.getOwnerID()+">\n" +
                             "La ID de esta pregunta es: `"+doc.getInteger("ID")+"`")
                     .addField("<:done:925056756290289694>  Paso nº 1", "Pregunta:```"+Pregunta+"```", false)
@@ -91,6 +92,7 @@ public class Messages extends ListenerAdapter {
                     .setAuthor("Añadir una pregunta al trivia", null, event.getJDA().getSelfUser().getAvatarUrl())
                     .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925053012475543612/emoji.png")
                     .setDescription("Bienvenido al proceso para añadir una pregunta al trivia.\n" +
+                            "Escribe un mensaje en el chat para rellenar cada apartado\n" +
                             "Si tienes alguna duda sobre este proceso, puedes mandarle un MD a <@!"+config.getOwnerID()+">\n" +
                             "La ID de esta pregunta es: `"+doc.getInteger("ID")+"`")
                     .addField("<:done:925056756290289694>  Paso nº 1", "Pregunta:```"+doc.getString("Pregunta")+"```", false)
@@ -137,6 +139,7 @@ public class Messages extends ListenerAdapter {
                     .setAuthor("Añadir una pregunta al trivia", null, event.getJDA().getSelfUser().getAvatarUrl())
                     .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925053012475543612/emoji.png")
                     .setDescription("Bienvenido al proceso para añadir una pregunta al trivia.\n" +
+                            "Escribe un mensaje en el chat para rellenar cada apartado\n" +
                             "Si tienes alguna duda sobre este proceso, puedes mandarle un MD a <@!"+config.getOwnerID()+">\n" +
                             "La ID de esta pregunta es: `"+doc.getInteger("ID")+"`")
                     .addField("<:done:925056756290289694>  Paso nº 1", "Pregunta:```"+doc.getString("Pregunta")+"```", false)

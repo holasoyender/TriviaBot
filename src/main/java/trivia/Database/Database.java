@@ -47,12 +47,12 @@ public class Database {
         Document Usuario = Usuarios.find(new Document("ID", user.getId())).first();
         if (Usuario == null) {
             Usuarios.insertOne(new Document("ID", user.getId()).append("Username", user.getAsTag()).append("Completadas", new ArrayList<String>()).append("Puntos", 0).append("Correctas", 0).append("Incorrectas", 0));
-            int ID = (int) (Math.random() *  Preguntas.find().into(new ArrayList<>()).size());
-            List<Document> PreguntasList = Preguntas.find().into(new ArrayList<>());
+            int ID = (int) (Math.random() *  Preguntas.find(new Document("Paso", 10).append("Revisada", true)).into(new ArrayList<>()).size());
+            List<Document> PreguntasList = Preguntas.find(new Document("Paso", 10).append("Revisada", true)).into(new ArrayList<>());
             return PreguntasList.get(ID).getInteger("ID");
         } else {
             List<Document> preguntasSinCompletar = new ArrayList<>();
-            for (Document pregunta : Preguntas.find()) {
+            for (Document pregunta : Preguntas.find(new Document("Paso", 10).append("Revisada", true))) {
                 if (!Usuario.getList("Completadas", String.class).contains(""+pregunta.getInteger("ID"))) {
                     preguntasSinCompletar.add(pregunta);
                 }

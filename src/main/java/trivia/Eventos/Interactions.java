@@ -3,6 +3,7 @@ package trivia.Eventos;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -24,9 +25,9 @@ public class Interactions extends ListenerAdapter {
         String buttonID = event.getComponentId();
 
         String[] args = buttonID.split(":");
-        if(args[0].equals("cmd")) {
-            if(args[1].equals("list")) {
-                if(event.getGuild() == null) return;
+        if (args[0].equals("cmd")) {
+            if (args[1].equals("list")) {
+                if (event.getGuild() == null) return;
 
                 int Page = Integer.parseInt(args[2]);
                 String Action = args[3];
@@ -59,7 +60,7 @@ public class Interactions extends ListenerAdapter {
 
                 if (Action.equals("back")) {
                     Page -= 1;
-                    if(Page < 0) {
+                    if (Page < 0) {
                         EmbedBuilder embed = new EmbedBuilder()
                                 .setColor(0xFF4334)
                                 .setDescription("**:no_entry_sign:  No puedes retroceder más!**");
@@ -68,9 +69,9 @@ public class Interactions extends ListenerAdapter {
                     }
                 }
 
-                if(Action.equals("next")) {
+                if (Action.equals("next")) {
                     Page += 1;
-                    if(Page > allQSplit.size() - 1) {
+                    if (Page > allQSplit.size() - 1) {
                         EmbedBuilder embed = new EmbedBuilder()
                                 .setColor(0xFF4334)
                                 .setDescription("**:no_entry_sign:  No se puede avanzar más!**");
@@ -79,24 +80,24 @@ public class Interactions extends ListenerAdapter {
                     }
                 }
 
-                int finalPage = Page+1;
+                int finalPage = Page + 1;
 
                 EmbedBuilder Embed = new EmbedBuilder()
                         .setColor(config.getColor())
                         .setAuthor("Lista de preguntas del Trivia", null, event.getJDA().getSelfUser().getAvatarUrl())
                         .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925119230565810266/emoji.png")
-                        .setFooter("Página "+finalPage+" de "+allQSplit.size(), null);
+                        .setFooter("Página " + finalPage + " de " + allQSplit.size(), null);
 
                 for (Document lDoc : allQSplit.get(Page)) {
-                    Embed.addField(" - Pregunta #"+lDoc.get("ID"), "```"+lDoc.get("Pregunta")+"```\n**<:externalcontent:830859377463656479>  Respuesta correcta**: `"+ lDoc.getString("Respuesta-correcta")+"`\n**:x:  Respuesta(s) incorrecta(s)**: ```\n"+String.join(",\n",lDoc.getList("Respuestas-incorrectas", String.class))+"```\n**:chart_with_upwards_trend:  Dificultad**: `"+lDoc.get("Dificultad")+"`", true);
+                    Embed.addField(" - Pregunta #" + lDoc.get("ID"), "```" + lDoc.get("Pregunta") + "```\n**<:externalcontent:830859377463656479>  Respuesta correcta**: `" + lDoc.getString("Respuesta-correcta") + "`\n**:x:  Respuesta(s) incorrecta(s)**: ```\n" + String.join(",\n", lDoc.getList("Respuestas-incorrectas", String.class)) + "```\n**:chart_with_upwards_trend:  Dificultad**: `" + lDoc.get("Dificultad") + "`", true);
                 }
 
                 event.replyEmbeds(Embed.build()).setEphemeral(false).addActionRow(
-                        Button.primary("cmd:list:"+Page+":back:"+event.getUser().getId(), "◀"),
-                        Button.primary("cmd:list:"+Page+":next:"+event.getUser().getId(), "▶")
+                        Button.primary("cmd:list:" + Page + ":back:" + event.getUser().getId(), "◀"),
+                        Button.primary("cmd:list:" + Page + ":next:" + event.getUser().getId(), "▶")
                 ).queue();
             }
-            if(args[1].equals("play")) {
+            if (args[1].equals("play")) {
                 String ModID = args[2];
                 long QuestionID = Long.parseLong(args[3]);
                 String type = args[4];
@@ -117,22 +118,22 @@ public class Interactions extends ListenerAdapter {
                     return;
                 }
 
-                if(type.equals("good")) {
+                if (type.equals("good")) {
                     String Dificultad = Question.getString("Dificultad");
                     String footerImg = "https://i.imgur.com/XlARsD6.png";
                     int Puntos = 0;
 
-                    if(Dificultad.equals("Fácil")) {
+                    if (Dificultad.equals("Fácil")) {
                         footerImg = "https://i.imgur.com/XlARsD6.png";
                         Puntos = 1;
                     }
 
-                    if(Dificultad.equals("Media")) {
+                    if (Dificultad.equals("Media")) {
                         footerImg = "https://i.imgur.com/521SKXF.png";
                         Puntos = 2;
                     }
 
-                    if(Dificultad.equals("Difícil")) {
+                    if (Dificultad.equals("Difícil")) {
                         footerImg = "https://i.imgur.com/JD0MDyW.png";
                         Puntos = 3;
                     }
@@ -142,30 +143,30 @@ public class Interactions extends ListenerAdapter {
 
                     EmbedBuilder Embed = new EmbedBuilder()
                             .setColor(0x6BF47E)
-                            .setAuthor("¡ Respuesta correcta de "+event.getUser().getName()+" !", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setAuthor("¡ Respuesta correcta de " + event.getUser().getName() + " !", null, event.getJDA().getSelfUser().getAvatarUrl())
                             .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925517686497247293/emoji..png")
                             .setDescription("```CSS\n" + Question.getString("Pregunta") + "```")
-                            .addField("Puntos recibidos", "**"+Puntos+"** puntos", true)
-                            .addField("Puntos totales", "**"+Database.getUserPoints(event.getUser())+"** puntos", true)
-                            .setFooter("Dificultad: " + Dificultad+"  |  ID: "+Question.getInteger("ID"), footerImg);
+                            .addField("Puntos recibidos", "**" + Puntos + "** puntos", true)
+                            .addField("Puntos totales", "**" + Database.getUserPoints(event.getUser()) + "** puntos", true)
+                            .setFooter("Dificultad: " + Dificultad + "  |  ID: " + Question.getInteger("ID"), footerImg);
 
                     event.editComponents().setEmbeds(Embed.build()).queue();
 
                     return;
                 }
-                if(type.equals("bad")) {
+                if (type.equals("bad")) {
                     String Dificultad = Question.getString("Dificultad");
                     String footerImg = "https://i.imgur.com/XlARsD6.png";
 
-                    if(Dificultad.equals("Fácil")) {
+                    if (Dificultad.equals("Fácil")) {
                         footerImg = "https://i.imgur.com/XlARsD6.png";
                     }
 
-                    if(Dificultad.equals("Media")) {
+                    if (Dificultad.equals("Media")) {
                         footerImg = "https://i.imgur.com/521SKXF.png";
                     }
 
-                    if(Dificultad.equals("Difícil")) {
+                    if (Dificultad.equals("Difícil")) {
                         footerImg = "https://i.imgur.com/JD0MDyW.png";
                     }
                     Database.addUserPoints(event.getUser(), -1);
@@ -174,12 +175,12 @@ public class Interactions extends ListenerAdapter {
 
                     EmbedBuilder Embed = new EmbedBuilder()
                             .setColor(0xFF4334)
-                            .setAuthor("¡ Respuesta incorrecta de "+event.getUser().getName()+" !", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setAuthor("¡ Respuesta incorrecta de " + event.getUser().getName() + " !", null, event.getJDA().getSelfUser().getAvatarUrl())
                             .setThumbnail("https://cdn.discordapp.com/attachments/726429501827055636/925494387457265744/emoji..png")
                             .setDescription("```CSS\n" + Question.getString("Pregunta") + "```")
                             .addField("Puntos recibidos", "**-1** puntos", true)
-                            .addField("Puntos totales", "**"+Database.getUserPoints(event.getUser())+"** puntos", true)
-                            .setFooter("Dificultad: " + Dificultad+"  |  ID: "+Question.getInteger("ID"), footerImg);
+                            .addField("Puntos totales", "**" + Database.getUserPoints(event.getUser()) + "** puntos", true)
+                            .setFooter("Dificultad: " + Dificultad + "  |  ID: " + Question.getInteger("ID"), footerImg);
 
                     event.editComponents().setEmbeds(Embed.build()).queue();
                 }
@@ -189,34 +190,68 @@ public class Interactions extends ListenerAdapter {
 
         MongoDatabase db = Database.getDatabase();
         FindIterable<Document> Preguntas = db.getCollection("Preguntas").find(new Document("OwnerID", event.getUser().getId()));
-        if(Preguntas.first() == null) {
+        if (Preguntas.first() == null) {
             event.reply("Parece que ese botón no está asociado a ninguna pregunta.").setEphemeral(true).queue();
             return;
         }
 
         List<Document> sinAcabar = new ArrayList<>();
-        for(Document doc : Preguntas) {
-            if(doc.getInteger("Paso") != 10)
+        for (Document doc : Preguntas) {
+            if (doc.getInteger("Paso") != 10)
                 sinAcabar.add(doc);
         }
 
-        if(sinAcabar.size() == 0) return;
+        if (sinAcabar.size() == 0) return;
         Document doc = sinAcabar.get(0);
-        if(buttonID.equals("hard")) {
+        boolean aprobar = doc.getBoolean("Revisada");
+        if (buttonID.equals("hard")) {
 
             List<String> respuestas = doc.getList("Respuestas-incorrectas", String.class);
+            EmbedBuilder Embed;
+            if (aprobar) {
 
-            EmbedBuilder Embed = new EmbedBuilder()
-                    .setColor(config.getColor())
-                    .setAuthor("Pregunta añadida al trivia!", null, event.getJDA().getSelfUser().getAvatarUrl())
-                    .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925105105068503040/emoji..png")
-                    .setDescription("Tu pregunta se ha añadido al trivia correctamente.\nLa ID de esta pregunta es: `"+doc.getInteger("ID")+"`")
-                    .addField(":grey_question:  Pregunta:", "```"+doc.getString("Pregunta")+"```", false)
-                    .addField(":bulb:  Respuesta correcta:", "```"+doc.getString("Respuesta-correcta")+"```", false)
-                    .addField(":x:  Respuesta(s) incorrecta(s)", "```\n"+String.join("\n", respuestas)+"```", false)
-                    .addField(":chart_with_upwards_trend:  Dificultad", "```Difícil```", false)
-                    .setFooter("Para ver más información sobre esta pregunta usa el comando /preguntas "+doc.getInteger("ID"), null);
+                Embed = new EmbedBuilder()
+                        .setColor(config.getColor())
+                        .setAuthor("Pregunta añadida al trivia!", null, event.getJDA().getSelfUser().getAvatarUrl())
+                        .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925105105068503040/emoji..png")
+                        .setDescription("Tu pregunta se ha añadido al trivia correctamente.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                        .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                        .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                        .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                        .addField(":chart_with_upwards_trend:  Dificultad", "```Difícil```", false)
+                        .setFooter("Para ver más información sobre esta pregunta usa el comando /preguntas " + doc.getInteger("ID"), null);
 
+            } else {
+
+                Embed = new EmbedBuilder()
+                        .setColor(0xFAC42A)
+                        .setAuthor("Pregunta añadida a revisión!", null, event.getJDA().getSelfUser().getAvatarUrl())
+                        .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925715477697814568/emoji.png")
+                        .setDescription("Tu pregunta se ha añadido a revisión\nTe mandaremos un mensaje por MD cuando tu pregunta sea aprobada/denegada.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                        .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                        .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                        .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                        .addField(":chart_with_upwards_trend:  Dificultad", "```Difícil```", false);
+
+                TextChannel Channel = (TextChannel) event.getJDA().getGuildChannelById(config.getSubmitChannelID());
+                if (Channel != null) {
+                    EmbedBuilder Embed2 = new EmbedBuilder()
+                            .setColor(0xFAC42A)
+                            .setAuthor("Nueva pregunta añadida a revisión", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925715477697814568/emoji.png")
+                            .setDescription("El usuario " + event.getUser().getAsMention() + " (" + event.getUser().getId() + ") ha añadido esta pregunta a revisión.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                            .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                            .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                            .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                            .addField(":chart_with_upwards_trend:  Dificultad", "```Difícil```", false)
+                            .setFooter("Haz click en los botones para aprobar o denegar la pregunta.", null);
+
+                    Channel.sendMessageEmbeds(Embed2.build()).setActionRow(
+                            Button.danger("cmd:deny:" + doc.getInteger("ID"), "Denegar"),
+                            Button.success("cmd:approve:" + doc.getInteger("ID"), "Aprobar")
+                    ).queue();
+                }
+            }
             event.getChannel().editMessageEmbedsById(doc.getString("MessageID"), Embed.build()).queue();
             event.editMessage("El nivel de dificultad ha sido cambiado a **Difícil**!.").setActionRow(
                     Button.danger("hard", "Difícil").asDisabled(),
@@ -226,21 +261,54 @@ public class Interactions extends ListenerAdapter {
             ).queue();
             db.getCollection("Preguntas").updateOne(new Document("_id", doc.getObjectId("_id")), new Document("$set", new Document("Paso", 10).append("Dificultad", "Difícil")));
         }
-        if(buttonID.equals("medium")) {
-
+        if (buttonID.equals("medium")) {
             List<String> respuestas = doc.getList("Respuestas-incorrectas", String.class);
+            EmbedBuilder Embed;
+            if (aprobar) {
 
-            EmbedBuilder Embed = new EmbedBuilder()
-                    .setColor(config.getColor())
-                    .setAuthor("Pregunta añadida al trivia!", null, event.getJDA().getSelfUser().getAvatarUrl())
-                    .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925105105068503040/emoji..png")
-                    .setDescription("Tu pregunta se ha añadido al trivia correctamente.\nLa ID de esta pregunta es: `"+doc.getInteger("ID")+"`")
-                    .addField(":grey_question:  Pregunta:", "```"+doc.getString("Pregunta")+"```", false)
-                    .addField(":bulb:  Respuesta correcta:", "```"+doc.getString("Respuesta-correcta")+"```", false)
-                    .addField(":x:  Respuesta(s) incorrecta(s)", "```\n"+String.join("\n", respuestas)+"```", false)
-                    .addField(":chart_with_upwards_trend:  Dificultad", "```Media```", false)
-                    .setFooter("Para ver más información sobre esta pregunta usa el comando /preguntas "+doc.getInteger("ID"), null);
+                Embed = new EmbedBuilder()
+                        .setColor(config.getColor())
+                        .setAuthor("Pregunta añadida al trivia!", null, event.getJDA().getSelfUser().getAvatarUrl())
+                        .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925105105068503040/emoji..png")
+                        .setDescription("Tu pregunta se ha añadido al trivia correctamente.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                        .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                        .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                        .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                        .addField(":chart_with_upwards_trend:  Dificultad", "```Media```", false)
+                        .setFooter("Para ver más información sobre esta pregunta usa el comando /preguntas " + doc.getInteger("ID"), null);
 
+            } else {
+
+                Embed = new EmbedBuilder()
+                        .setColor(0xFAC42A)
+                        .setAuthor("Pregunta añadida a revisión!", null, event.getJDA().getSelfUser().getAvatarUrl())
+                        .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925715477697814568/emoji.png")
+                        .setDescription("Tu pregunta se ha añadido a revisión\nTe mandaremos un mensaje por MD cuando tu pregunta sea aprobada/denegada.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                        .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                        .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                        .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                        .addField(":chart_with_upwards_trend:  Dificultad", "```Media```", false);
+
+                TextChannel Channel = (TextChannel) event.getJDA().getGuildChannelById(config.getSubmitChannelID());
+                if (Channel != null) {
+                    EmbedBuilder Embed2 = new EmbedBuilder()
+                            .setColor(0xFAC42A)
+                            .setAuthor("Nueva pregunta añadida a revisión", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925715477697814568/emoji.png")
+                            .setDescription("El usuario " + event.getUser().getAsMention() + " (" + event.getUser().getId() + ") ha añadido esta pregunta a revisión.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                            .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                            .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                            .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                            .addField(":chart_with_upwards_trend:  Dificultad", "```Media```", false)
+                            .setFooter("Haz click en los botones para aprobar o denegar la pregunta.", null);
+
+                    Channel.sendMessageEmbeds(Embed2.build()).setActionRow(
+                            Button.danger("cmd:deny:" + doc.getInteger("ID"), "Denegar"),
+                            Button.success("cmd:approve:" + doc.getInteger("ID"), "Aprobar")
+                    ).queue();
+                }
+
+            }
             event.getChannel().editMessageEmbedsById(doc.getString("MessageID"), Embed.build()).queue();
             event.editMessage("El nivel de dificultad ha sido cambiado a **Media**!.").setActionRow(
                     Button.danger("hard", "Difícil").asDisabled(),
@@ -250,21 +318,53 @@ public class Interactions extends ListenerAdapter {
             ).queue();
             db.getCollection("Preguntas").updateOne(new Document("_id", doc.getObjectId("_id")), new Document("$set", new Document("Paso", 10).append("Dificultad", "Media")));
         }
-        if(buttonID.equals("easy")) {
-
+        if (buttonID.equals("easy")) {
             List<String> respuestas = doc.getList("Respuestas-incorrectas", String.class);
+            EmbedBuilder Embed;
+            if (aprobar) {
 
-            EmbedBuilder Embed = new EmbedBuilder()
-                    .setColor(config.getColor())
-                    .setAuthor("Pregunta añadida al trivia!", null, event.getJDA().getSelfUser().getAvatarUrl())
-                    .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925105105068503040/emoji..png")
-                    .setDescription("Tu pregunta se ha añadido al trivia correctamente.\nLa ID de esta pregunta es: `"+doc.getInteger("ID")+"`")
-                    .addField(":grey_question:  Pregunta:", "```"+doc.getString("Pregunta")+"```", false)
-                    .addField(":bulb:  Respuesta correcta:", "```"+doc.getString("Respuesta-correcta")+"```", false)
-                    .addField(":x:  Respuesta(s) incorrecta(s)", "```\n"+String.join("\n", respuestas)+"```", false)
-                    .addField(":chart_with_upwards_trend:  Dificultad", "```Fácil```", false)
-                    .setFooter("Para ver más información sobre esta pregunta usa el comando /preguntas "+doc.getInteger("ID"), null);
+                Embed = new EmbedBuilder()
+                        .setColor(config.getColor())
+                        .setAuthor("Pregunta añadida al trivia!", null, event.getJDA().getSelfUser().getAvatarUrl())
+                        .setThumbnail("https://cdn.discordapp.com/attachments/755000173922615336/925105105068503040/emoji..png")
+                        .setDescription("Tu pregunta se ha añadido al trivia correctamente.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                        .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                        .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                        .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                        .addField(":chart_with_upwards_trend:  Dificultad", "```Fácil```", false)
+                        .setFooter("Para ver más información sobre esta pregunta usa el comando /preguntas " + doc.getInteger("ID"), null);
 
+            } else {
+
+                Embed = new EmbedBuilder()
+                        .setColor(0xFAC42A)
+                        .setAuthor("Pregunta añadida a revisión!", null, event.getJDA().getSelfUser().getAvatarUrl())
+                        .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925715477697814568/emoji.png")
+                        .setDescription("Tu pregunta se ha añadido a revisión\nTe mandaremos un mensaje por MD cuando tu pregunta sea aprobada/denegada.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                        .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                        .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                        .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                        .addField(":chart_with_upwards_trend:  Dificultad", "```Fácil```", false);
+
+                TextChannel Channel = (TextChannel) event.getJDA().getGuildChannelById(config.getSubmitChannelID());
+                if (Channel != null) {
+                    EmbedBuilder Embed2 = new EmbedBuilder()
+                            .setColor(0xFAC42A)
+                            .setAuthor("Nueva pregunta añadida a revisión", null, event.getJDA().getSelfUser().getAvatarUrl())
+                            .setThumbnail("https://cdn.discordapp.com/attachments/923548627706736701/925715477697814568/emoji.png")
+                            .setDescription("El usuario "+event.getUser().getAsMention()+" ("+event.getUser().getId()+") ha añadido esta pregunta a revisión.\nLa ID de esta pregunta es: `" + doc.getInteger("ID") + "`")
+                            .addField(":grey_question:  Pregunta:", "```" + doc.getString("Pregunta") + "```", false)
+                            .addField(":bulb:  Respuesta correcta:", "```" + doc.getString("Respuesta-correcta") + "```", false)
+                            .addField(":x:  Respuesta(s) incorrecta(s)", "```\n" + String.join("\n", respuestas) + "```", false)
+                            .addField(":chart_with_upwards_trend:  Dificultad", "```Fácil```", false)
+                            .setFooter("Haz click en los botones para aprobar o denegar la pregunta.", null);
+
+                    Channel.sendMessageEmbeds(Embed2.build()).setActionRow(
+                            Button.danger("cmd:deny:"+doc.getInteger("ID"), "Denegar"),
+                            Button.success("cmd:approve:"+doc.getInteger("ID"), "Aprobar")
+                    ).queue();
+                }
+            }
             event.getChannel().editMessageEmbedsById(doc.getString("MessageID"), Embed.build()).queue();
             event.editMessage("El nivel de dificultad ha sido cambiado a **Fácil**!.").setActionRow(
                     Button.danger("hard", "Difícil").asDisabled(),
@@ -274,7 +374,7 @@ public class Interactions extends ListenerAdapter {
             ).queue();
             db.getCollection("Preguntas").updateOne(new Document("_id", doc.getObjectId("_id")), new Document("$set", new Document("Paso", 10).append("Dificultad", "Fácil")));
         }
-        if(buttonID.equals("cancel")) {
+        if (buttonID.equals("cancel")) {
             EmbedBuilder Embed = new EmbedBuilder()
                     .setAuthor("Creación de pregunta cancelada", null, event.getJDA().getSelfUser().getAvatarUrl())
                     .setColor(0xFF4334);
