@@ -1,7 +1,7 @@
  HECHO ----- Que todos los usuarios puedan agregar preguntas, pero que si tienen X rol se acepten automáticamente y si no lo tienen que pasen por revisión
     -  HECHO ----- Canal en donde enviar los embeds con un botón de si/no para aprobar o rechazar la pregunta
     - Comando de bloquear y desbloquear usuarios (para que no puedan agregar preguntas)
-    - Comando de eliminar preguntas (solo con el rol de admin)
+    -  HECHO ----- Comando de eliminar preguntas (solo con el rol de admin)
 
  HECHO ----- Comando de Leaderboard (Lista de los usuarios con más puntos)
  HECHO ----- Comando de Stats (Estadísticas por usuario)
